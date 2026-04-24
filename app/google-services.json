@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "16008531866",
+    "project_id": "tepertochno-82a9f",
+    "storage_bucket": "tepertochno-82a9f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:16008531866:android:70b90f0c97b6d2d358b423",
+        "android_client_info": {
+          "package_name": "com.example.tepertochno"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXcW-iU8jqsydk6olBZ9Z1ac0Ez7Qk_xg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
