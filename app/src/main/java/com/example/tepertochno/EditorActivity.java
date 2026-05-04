@@ -77,6 +77,20 @@ public class EditorActivity extends AppCompatActivity {
                                 Toast.makeText(this, "Ошибка: " + e.getMessage(), Toast.LENGTH_LONG).show();
                             });
                 }
+                // Путь: users -> UID -> myArticles -> ID статьи
+                DatabaseReference userArticlesRef = FirebaseDatabase.getInstance(databaseUrl)
+                        .getReference("users")
+                        .child(uid)
+                        .child("myArticles");
+                Article newArticle = new Article(articleId, title, authorName, content, topic);
+
+                if (articleId != null) {
+                    userArticlesRef.child(articleId).setValue(newArticle)
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(this, "Статья сохранена в ваш профиль", Toast.LENGTH_SHORT).show();
+                                finish();
+                            });
+                }
             });
 
 
@@ -84,4 +98,6 @@ public class EditorActivity extends AppCompatActivity {
 
         });
     }
+
+
 }

@@ -1,5 +1,7 @@
 package com.example.tepertochno;
 
+import static android.opengl.ETC1.encodeImage;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +12,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -29,24 +32,23 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity {
+    Button btnLogout;
+
     String databaseUrl = "https://tepertochno-82a9f-default-rtdb.europe-west1.firebasedatabase.app/";
     DatabaseReference db = FirebaseDatabase.getInstance(databaseUrl).getReference("articles");
     ArticleAdapter adapter;
-    Button btnLogout;
-    TextView welcome;
+
     List<Article> list = new ArrayList<>();
+    String uid;
 
     ImageView ivUserAvatar;
-    String uid;
 
     // Лаунчер для выбора картинки из галереи
     private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
@@ -60,52 +62,17 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-            return;
-
-        }
-        ivUserAvatar = findViewById(R.id.ivUserAvatar);
-        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-// Клик по аватарке — открыть галерею
-        ivUserAvatar.setOnClickListener(v -> {
-            startActivity(new Intent(this, ProfileActivity.class));
-        });
-
-// Загрузка аватарки при входе
-        loadUserAvatar();
-
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-// 2. Ссылка на конкретного пользователя в БД
-// Убедитесь, что databaseUrl совпадает с тем, что вы использовали в RegisterActivity
-        String databaseUrl = "https://tepertochno-82a9f-default-rtdb.europe-west1.firebasedatabase.app/";
-        DatabaseReference userRef = FirebaseDatabase.getInstance(databaseUrl).getReference("users").child(uid);
-
-// 3. Читаем данные один раз
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    // Достаем поле "name", которое мы сохраняли при регистрации
-                    String userName = snapshot.child("name").getValue(String.class);
-
-                    // Устанавливаем в TextView
-                    TextView tvWelcome = findViewById(R.id.tvWelcome);
-                    tvWelcome.setText("Привет, " + userName + "!");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("DB_ERROR", "Не удалось получить имя: " + error.getMessage());
-            }
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_profile);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
         });
 
         btnLogout = findViewById(R.id.btnLogout);
@@ -115,35 +82,96 @@ public class MainActivity extends AppCompatActivity {
             FirebaseAuth.getInstance().signOut();
 
             // 2. Переходим на экран регистрации
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
             // Очищаем стек активностей, чтобы нельзя было вернуться назад кнопкой "Back"
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
         });
 
-        RecyclerView rv = findViewById(R.id.recyclerView);
+        ivUserAvatar = findViewById(R.id.ivProfileAvatar);
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+// Клик по аватарке — открыть галерею
+        ivUserAvatar.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            pickImageLauncher.launch(intent);
+        });
+
+// Загрузка аватарки при входе
+        loadUserAvatar();
+
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
+        String databaseUrl = "https://tepertochno-82a9f-default-rtdb.europe-west1.firebasedatabase.app/";
+        DatabaseReference userRef = FirebaseDatabase.getInstance(databaseUrl).getReference("users").child(uid);
+        DatabaseReference userArticlesRef = FirebaseDatabase.getInstance(databaseUrl)
+                .getReference("users")
+                .child(uid)
+                .child("myArticles");
+        RecyclerView rv = findViewById(R.id.recyclerView2);
         adapter = new ArticleAdapter(list);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(adapter);
 
-        // Слушатель данных из Firebase
-        db.addValueEventListener(new ValueEventListener() {
+        // 3. Слушаем изменения в этом узле
+        userArticlesRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                list.clear();
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    list.add(ds.getValue(Article.class));
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list.clear(); // Очищаем старый список перед обновлением
+
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Article article = postSnapshot.getValue(Article.class);
+                    if (article != null) {
+                        list.add(article);
+                    }
                 }
+
+                // 4. Инициализируем адаптер и привязываем к RecyclerView
+                // Используем ваш ArticleAdapter(List<Article> articles)
+
+                // Если адаптер уже был установлен ранее, можно просто вызвать:
                 adapter.notifyDataSetChanged();
             }
+
             @Override
-            public void onCancelled(DatabaseError error) {}
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ProfileActivity.this, "Ошибка загрузки: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
 
-        findViewById(R.id.fabAdd).setOnClickListener(v ->
-                startActivity(new Intent(this, EditorActivity.class)));
+
+
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Достаем поле "name", которое мы сохраняли при регистрации
+                    String userName = snapshot.child("name").getValue(String.class);
+                    String userEmail = snapshot.child("email").getValue(String.class);
+
+                    // Устанавливаем в TextView
+                    TextView tvWelcome = findViewById(R.id.tvProfileName);
+                    TextView tvProfileemail = findViewById(R.id.tvProfileEmail);
+                    tvProfileemail.setText(userEmail);
+                    tvWelcome.setText(userName);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("DB_ERROR", "Не удалось получить имя: " + error.getMessage());
+            }
+        });
+
+
+
+
     }
+
     // МЕТОД 1: Конвертация картинки в маленькую строку текста
     private String encodeImage(Uri uri) {
         try {
@@ -185,4 +213,5 @@ public class MainActivity extends AppCompatActivity {
                 .circleCrop()
                 .into(ivUserAvatar);
     }
+
 }
