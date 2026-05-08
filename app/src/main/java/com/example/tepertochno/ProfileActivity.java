@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
-    Button btnLogout;
+    Button btnLogout, btnRedaction;
 
     String databaseUrl = "https://tepertochno-82a9f-default-rtdb.europe-west1.firebasedatabase.app/";
     DatabaseReference db = FirebaseDatabase.getInstance(databaseUrl).getReference("articles");
@@ -76,6 +77,17 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         btnLogout = findViewById(R.id.btnLogout);
+        btnRedaction = findViewById(R.id.btnRedaction);
+
+        btnRedaction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, ProfileEditingActivity.class);
+                // Очищаем стек активностей, чтобы нельзя было вернуться назад кнопкой "Back"
+                startActivity(intent);
+                finish();
+            }
+        });
 
         btnLogout.setOnClickListener(v -> {
             // 1. Выходим из системы в Firebase Auth
@@ -92,14 +104,7 @@ public class ProfileActivity extends AppCompatActivity {
         ivUserAvatar = findViewById(R.id.ivProfileAvatar);
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-// Клик по аватарке — открыть галерею
-        ivUserAvatar.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            pickImageLauncher.launch(intent);
-        });
 
-// Загрузка аватарки при входе
         loadUserAvatar();
 
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -213,5 +218,6 @@ public class ProfileActivity extends AppCompatActivity {
                 .circleCrop()
                 .into(ivUserAvatar);
     }
+
 
 }

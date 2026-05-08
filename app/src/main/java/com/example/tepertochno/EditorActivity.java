@@ -54,44 +54,32 @@ public class EditorActivity extends AppCompatActivity {
                 User user = snapshot.getValue(User.class);
                 String authorName = (user != null) ? user.name : "Аноним";
 
+                // БЕРЕМ UID НАПРЯМУЮ, это исключит ошибку с null/пустым id
+                String authorId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
                 DatabaseReference dbArticles = FirebaseDatabase.getInstance(databaseUrl).getReference("articles");
                 String articleId = dbArticles.push().getKey();
 
-                Article article = new Article(articleId, title, authorName, content,topic);
-                dbArticles.child(articleId).setValue(article).addOnCompleteListener(task -> finish());
-
-
-
-
-                DatabaseReference db = FirebaseDatabase.getInstance(databaseUrl).getReference("articles");
-
-
                 if (articleId != null) {
-                    db.child(articleId).setValue(article)
-                            .addOnSuccessListener(aVoid -> {
-                                Log.d("MY_APP", "Успех в Firebase!");
-                                finish(); // Закрыть экран после сохранения
-                            })
-                            .addOnFailureListener(e -> {
-                                Log.e("MY_APP", "Ошибка Firebase: " + e.getMessage());
-                                Toast.makeText(this, "Ошибка: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                            });
-                }
-                // Путь: users -> UID -> myArticles -> ID статьи
-                DatabaseReference userArticlesRef = FirebaseDatabase.getInstance(databaseUrl)
-                        .getReference("users")
-                        .child(uid)
-                        .child("myArticles");
-                Article newArticle = new Article(articleId, title, authorName, content, topic);
+                    Article article = new Article(articleId, title, authorName, content, topic, authorId);
 
-                if (articleId != null) {
-                    userArticlesRef.child(articleId).setValue(newArticle)
+                    // 1. Сохраняем в общий список
+                    dbArticles.child(articleId).setValue(article);
+
+                    // 2. Сохраняем в личный список пользователя
+                    DatabaseReference userArticlesRef = FirebaseDatabase.getInstance(databaseUrl)
+                            .getReference("users")
+                            .child(authorId)
+                            .child("myArticles");
+
+                    userArticlesRef.child(articleId).setValue(article)
                             .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(this, "Статья сохранена в ваш профиль", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Статья опубликована!", Toast.LENGTH_SHORT).show();
                                 finish();
                             });
                 }
             });
+
 
 
 
