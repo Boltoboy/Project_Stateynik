@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
-    Button btnLogout, btnRedaction;
+    ImageView btnLogout, btnRedaction, btnToMain;
 
     String databaseUrl = "https://tepertochno-82a9f-default-rtdb.europe-west1.firebasedatabase.app/";
     DatabaseReference db = FirebaseDatabase.getInstance(databaseUrl).getReference("articles");
@@ -78,6 +78,15 @@ public class ProfileActivity extends AppCompatActivity {
 
         btnLogout = findViewById(R.id.btnLogout);
         btnRedaction = findViewById(R.id.btnRedaction);
+        btnToMain = findViewById(R.id.toMain);
+        btnToMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         btnRedaction.setOnClickListener(new View.OnClickListener() {
             @Override
