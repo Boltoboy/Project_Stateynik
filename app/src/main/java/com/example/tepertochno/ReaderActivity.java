@@ -24,12 +24,50 @@ public class ReaderActivity extends AppCompatActivity {
         String title = getIntent().getStringExtra("title");
         String author = getIntent().getStringExtra("author");
         String topic = getIntent().getStringExtra("topic");
-        String content = getIntent().getStringExtra("content");
 
         // Отображаем их
         tvTitle.setText(title);
         tvAuthor.setText("Автор(ы) - " + author);
-        tvTopic.setText(topic);
-        tvContent.setText(content);
+        tvTopic.setText("Раздел - "+topic);
+        String contentText = getIntent().getStringExtra("content");
+
+        if (contentText != null) {
+            // 1. Очищаем текст от старых символов табуляции, чтобы они не ломали верстку
+            String cleanText = contentText.replace("\t", "");
+
+            // 2. Разделяем текст на отдельные абзацы по символу переноса строки
+            String[] paragraphs = cleanText.split("\n");
+            android.text.SpannableStringBuilder builder = new android.text.SpannableStringBuilder();
+
+            for (int i = 0; i < paragraphs.length; i++) {
+                String paragraph = paragraphs[i];
+
+                // Пропускаем пустые строки между абзацами, если пользователь нажимал Enter дважды
+                if (paragraph.trim().isEmpty()) {
+                    builder.append("\n");
+                    continue;
+                }
+
+                int start = builder.length();
+                builder.append(paragraph);
+                int end = builder.length();
+
+                // 3. Создаем отступ: 40 пикселей для ПЕРВОЙ строки абзаца, 0 пикселей для всех остальных
+                android.text.style.LeadingMarginSpan marginSpan =
+                        new android.text.style.LeadingMarginSpan.Standard(40, 0);
+
+                // 4. Применяем этот отступ СТРОГО к текущему абзацу
+                builder.setSpan(marginSpan, start, end, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                // Добавляем перенос строки для следующего абзаца
+                if (i < paragraphs.length - 1) {
+                    builder.append("\n");
+                }
+            }
+
+            // 5. Выводим текст на экран
+            tvContent.setText(builder);
+        }
+
     }
 }

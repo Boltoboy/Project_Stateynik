@@ -41,11 +41,10 @@ public class MainActivity extends AppCompatActivity {
     String databaseUrl = "https://tepertochno-82a9f-default-rtdb.europe-west1.firebasedatabase.app/";
     DatabaseReference db = FirebaseDatabase.getInstance(databaseUrl).getReference("articles");
     ArticleAdapter adapter;
-    Button btnLogout;
     TextView welcome;
     List<Article> list = new ArrayList<>();
 
-    ImageView ivUserAvatar;
+    ImageView ivUserAvatar, btnLogout;
     String uid;
 
     // Лаунчер для выбора картинки из галереи
@@ -141,8 +140,6 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError error) {}
         });
 
-        findViewById(R.id.fabAdd).setOnClickListener(v ->
-                startActivity(new Intent(this, EditorActivity.class)));
     }
     // МЕТОД 1: Конвертация картинки в маленькую строку текста
     private String encodeImage(Uri uri) {

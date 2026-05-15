@@ -48,6 +48,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     List<Article> list = new ArrayList<>();
     String uid;
+    Button add;
 
     ImageView ivUserAvatar;
 
@@ -70,11 +71,6 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         btnLogout = findViewById(R.id.btnLogout);
         btnRedaction = findViewById(R.id.btnRedaction);
@@ -87,6 +83,7 @@ public class ProfileActivity extends AppCompatActivity {
                 finish();
             }
         });
+
 
         btnRedaction.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,6 +105,15 @@ public class ProfileActivity extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
+        });
+
+        add = findViewById(R.id.fabAdd);
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, EditorActivity.class);
+                startActivity(intent);
+            }
         });
 
         ivUserAvatar = findViewById(R.id.ivProfileAvatar);

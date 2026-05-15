@@ -1,6 +1,8 @@
 package com.example.tepertochno;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +28,42 @@ public class EditorActivity extends AppCompatActivity {
         EditText etTopic = findViewById(R.id.etTopic);
         EditText etContent = findViewById(R.id.etContent);
         Button btnSave = findViewById(R.id.btnSave);
+
+// Символ табуляции или фиксированное количество пробелов для красной строки
+        final String indent = "\t";
+
+        etContent.addTextChangedListener(new TextWatcher() {
+            private boolean isIterating = false;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (isIterating) return;
+
+                // Если пользователь нажал Enter (добавился перенос строки)
+                if (count == 1 && s.charAt(start) == '\n') {
+                    isIterating = true;
+
+                    // Вставляем отступ сразу после символа переноса строки
+                    etContent.getText().insert(start + 1, indent);
+
+                    isIterating = false;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Проверяем самый первый абзац текста: если он пустой или не начинается с отступа
+                if (!isIterating && s.length() > 0 && !s.toString().startsWith(indent)) {
+                    isIterating = true;
+                    s.insert(0, indent); // Добавляем отступ в самое начало текста
+                    isIterating = false;
+                }
+            }
+        });
+
 
         btnSave.setOnClickListener(v -> {
 

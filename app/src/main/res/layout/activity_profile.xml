@@ -15,7 +15,10 @@
         android:background="#6200EE"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:paddingTop="30dp"
+        android:paddingStart="12dp"
+        android:paddingBottom="12dp"
+        >
 
         <!-- Аватарка (заглушка) -->
         <com.google.android.material.card.MaterialCardView
@@ -118,11 +121,16 @@
         android:textColor="@android:color/black"
         android:textSize="22sp"
         android:textStyle="bold" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-
+        android:layout_height="475dp" />
+    <Button
+        android:id="@+id/fabAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Создать новую статью"
         />
 
 
