@@ -2,26 +2,234 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/white">
+
+    <!-- Горизонтальный ряд из 5 одинаковых кнопок для картинок -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginBottom="12dp"
+        android:orientation="horizontal"
+        android:background="@color/purple"
+        android:gravity="center">
+
+        <ImageButton
+            android:id="@+id/btnImg1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="Картинка 1"
+            android:scaleType="centerCrop"
+            android:src="@drawable/fontsize" />
+
+        <ImageButton
+            android:id="@+id/btnImg2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="Картинка 1"
+            android:scaleType="centerCrop"
+            android:src="@drawable/color" />
+
+        <ImageButton
+            android:id="@+id/btnImg3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:layout_margin="2dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="Картинка 3"
+            android:scaleType="centerCrop"
+            android:src="@android:drawable/ic_menu_add" />
+
+
+    </LinearLayout>
+
+    <TableLayout
+        android:id="@+id/layoutFontSettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone"
+        android:stretchColumns="0,1">
+
+        <!-- Верхняя строка: Спиннер шрифтов и Спиннер размеров -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+            <Spinner
+                android:id="@+id/spinnerFonts"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:spinnerMode="dropdown" />
+            <Spinner
+                android:id="@+id/spinnerSizes"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:spinnerMode="dropdown" />
+        </TableRow>
+
+        <!-- Нижняя строка: Демо-буква на всю ширину -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp">
+            <TextView
+                android:id="@+id/tvDemoFont"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_span="2"
+                android:text="А"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:layout_margin="4dp" />
+        </TableRow>
+    </TableLayout>
+
+
+    <TableLayout
+        android:id="@+id/layoutColorSettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone"
+        android:stretchColumns="0,1">
+
+        <!-- Верхняя строка: Подпись и Спиннер цветов -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Цвет текста:"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:layout_margin="4dp"/>
+            <Spinner
+                android:id="@+id/spinnerColors"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:spinnerMode="dropdown" />
+        </TableRow>
+
+        <!-- Нижняя строка: Демо-буква на всю ширину -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp">
+            <TextView
+                android:id="@+id/tvDemoColor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_span="2"
+                android:text="А"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:layout_margin="4dp" />
+        </TableRow>
+    </TableLayout>
+
+
+    <TableLayout
+        android:id="@+id/layoutSpecialStyles"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone"
+        android:stretchColumns="0,1">
+
+        <!-- Первая строка таблицы: Жирный и Курсив -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+            <CheckBox
+                android:id="@+id/cbBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Жирный (B)"
+                android:textStyle="bold"
+                android:layout_margin="4dp" />
+            <CheckBox
+                android:id="@+id/cbItalic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Курсив (I)"
+                android:textStyle="italic"
+                android:layout_margin="4dp" />
+        </TableRow>
+
+        <!-- Вторая строка таблицы: Подчеркнутый и Зачеркнутый -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="4dp">
+            <CheckBox
+                android:id="@+id/cbUnderline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Подчеркнутый (U)"
+                android:layout_gravity="center"
+                android:layout_span="2"
+                android:layout_margin="4dp" />
+        </TableRow>
+
+        <!-- Третья строка таблицы: Демо-буква "А" в самом низу -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+            <TextView
+                android:id="@+id/tvDemoSpecial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_span="2"
+                android:text="А"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:layout_margin="4dp" />
+        </TableRow>
+    </TableLayout>
+
+
+
 
     <EditText
         android:id="@+id/etTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Заголовок" />
+
     <EditText
         android:id="@+id/etTopic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Раздел" />
 
-    <EditText
+    <!-- Вместо старого EditText etContent вставляем этот компонент -->
+    <!-- Вместо com.wasabeef используем jp.wasabeef -->
+    <jp.wasabeef.richeditor.RichEditor
         android:id="@+id/etContent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:gravity="top"
-        android:hint="Текст статьи" />
+        android:background="@android:color/white" />
+
+
 
     <Button
         android:id="@+id/btnSave"

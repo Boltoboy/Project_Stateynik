@@ -1,6 +1,7 @@
 package com.example.tepertochno;
 
 import android.os.Bundle;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -18,7 +19,6 @@ public class ReaderActivity extends AppCompatActivity {
         TextView tvTitle = findViewById(R.id.tvReaderTitle);
         TextView tvAuthor = findViewById(R.id.tvReaderAuthor);
         TextView tvTopic = findViewById(R.id.tvReaderTopic);
-        TextView tvContent = findViewById(R.id.tvReaderContent);
 
         // Получаем данные, которые передал Адаптер
         String title = getIntent().getStringExtra("title");
@@ -29,45 +29,29 @@ public class ReaderActivity extends AppCompatActivity {
         tvTitle.setText(title);
         tvAuthor.setText("Автор(ы) - " + author);
         tvTopic.setText("Раздел - "+topic);
-        String contentText = getIntent().getStringExtra("content");
 
-        if (contentText != null) {
-            // 1. Очищаем текст от старых символов табуляции, чтобы они не ломали верстку
-            String cleanText = contentText.replace("\t", "");
 
-            // 2. Разделяем текст на отдельные абзацы по символу переноса строки
-            String[] paragraphs = cleanText.split("\n");
-            android.text.SpannableStringBuilder builder = new android.text.SpannableStringBuilder();
+        WebView webView = findViewById(R.id.tvReaderContent);
+        String htmlContent = getIntent().getStringExtra("content");
 
-            for (int i = 0; i < paragraphs.length; i++) {
-                String paragraph = paragraphs[i];
+        if (htmlContent != null) {
+            // Внедряем CSS-стиль, который заставляет линию зачеркивания центрироваться строго по высоте каждого символа
+            String cssStyle = "<style>" +
+                    "strike, s, span[style*='line-through'] {" +
+                    "    text-decoration: line-through !important;" +
+                    "    display: inline-block;" +
+                    "    vertical-align: middle;" +
+                    "    line-height: normal;" +
+                    "}" +
+                    "</style>";
 
-                // Пропускаем пустые строки между абзацами, если пользователь нажимал Enter дважды
-                if (paragraph.trim().isEmpty()) {
-                    builder.append("\n");
-                    continue;
-                }
+            String fullHtml = cssStyle + htmlContent;
 
-                int start = builder.length();
-                builder.append(paragraph);
-                int end = builder.length();
-
-                // 3. Создаем отступ: 40 пикселей для ПЕРВОЙ строки абзаца, 0 пикселей для всех остальных
-                android.text.style.LeadingMarginSpan marginSpan =
-                        new android.text.style.LeadingMarginSpan.Standard(40, 0);
-
-                // 4. Применяем этот отступ СТРОГО к текущему абзацу
-                builder.setSpan(marginSpan, start, end, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                // Добавляем перенос строки для следующего абзаца
-                if (i < paragraphs.length - 1) {
-                    builder.append("\n");
-                }
-            }
-
-            // 5. Выводим текст на экран
-            tvContent.setText(builder);
+            webView.loadDataWithBaseURL(null, fullHtml, "text/html", "utf-8", null);
         }
+
+
+
 
     }
 }

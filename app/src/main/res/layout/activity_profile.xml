@@ -6,12 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ProfileActivity">
+    tools:context=".ProfileActivity"
+    android:background="@color/white">
 
     <LinearLayout
         android:id="@+id/topPanel"
         android:layout_width="match_parent"
-        android:layout_height="175dp"
+        android:layout_height="wrap_content"
         android:background="#6200EE"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -51,28 +52,27 @@
 
                 <ImageView
                     android:id="@+id/btnRedaction"
-                    android:layout_width="58dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="58dp"
-                    android:layout_marginEnd="5dp"
                     android:src="@drawable/redaction">
 
                 </ImageView>
 
                 <ImageView
                     android:id="@+id/btnLogout"
-                    android:layout_width="58dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="58dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginStart="5dp"
                     android:src="@drawable/logout">
 
                 </ImageView>
 
                 <ImageView
                     android:id="@+id/toMain"
-                    android:layout_width="58dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="58dp"
-                    android:layout_marginStart="5dp"
                     android:src="@drawable/home">
 
                 </ImageView>

@@ -12,7 +12,6 @@ import java.util.List;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder> {
     private List<Article> articles;
-
     public ArticleAdapter(List<Article> articles) {
         this.articles = articles;
     }

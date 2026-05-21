@@ -53,4 +53,6 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(libs.glide)
     implementation(libs.firebase.storage)
+    implementation("jp.wasabeef:richeditor-android:2.0.0")
+
 }
