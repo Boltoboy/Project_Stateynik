@@ -37,6 +37,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Войти"
+        android:textStyle="bold"
+        android:backgroundTint="@color/purple"
         android:padding="12dp" />
 
     <TextView
@@ -44,6 +46,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Нет аккаунта? Зарегистрироваться"
+        android:textStyle="bold"
+        android:backgroundTint="@color/purple"
         android:layout_marginTop="16dp"
         android:layout_gravity="center_horizontal"
         android:textColor="?attr/colorPrimary" />

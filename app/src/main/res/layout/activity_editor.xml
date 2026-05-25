@@ -44,7 +44,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="Картинка 3"
             android:scaleType="centerCrop"
-            android:src="@android:drawable/ic_menu_add" />
+            android:src="@drawable/spech" />
 
 
     </LinearLayout>
@@ -235,5 +235,10 @@
         android:id="@+id/btnSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Сохранить" />
+        android:text="Сохранить"
+        android:backgroundTint="@color/purple"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
 </LinearLayout>

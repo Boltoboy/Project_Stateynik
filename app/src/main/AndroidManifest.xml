@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TeperTochno">
         <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        <activity
             android:name=".ProfileEditingActivity"
             android:exported="false" />
         <activity
@@ -31,10 +34,10 @@
             android:exported="false" />
         <activity
             android:name=".EditorActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

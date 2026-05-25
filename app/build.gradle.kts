@@ -54,5 +54,6 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.firebase.storage)
     implementation("jp.wasabeef:richeditor-android:2.0.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
 }
